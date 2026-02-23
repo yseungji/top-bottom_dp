@@ -4,11 +4,11 @@ using namespace std;
 typedef pair<int,int> P;
 int sudoku[9][9] ;
 vector <P> jump;
-P next_index(int y, int x);
 void input();
 void possible_num (int y, int x, bool possible[]);
 void output();
 void recursion(int now);
+bool ans = false;
 
 int main()
 {
@@ -19,12 +19,11 @@ int main()
         for(int j=0;j<9;j++){
             if(sudoku[i][j]==0){
                 jump.push_back(make_pair(i,j));
-                return 0;
             }
         }
     }
-    recursion(0);
 
+    recursion(0); //매개변수로 now 현재 순서
     return 0;
 }
 
@@ -47,25 +46,7 @@ void output() {
         }
         cout << '\n';
     }
-}
-
-P next_index(int y, int x){
-    P a;
-    if(y==8 && x == 8){
-        a.first = -1; a.second = -1;
-        return a;
-    }
-
-    if(x==8){
-        y=y+1;
-    }
-    else{
-        x= x+1;
-    }
-    a.first = y;
-    a.second = x;
-    return a;
-    
+    cout << '\n';
 }
 
 void possible_num (int y, int x, bool possible[]) {
@@ -106,9 +87,9 @@ void possible_num (int y, int x, bool possible[]) {
     cc[8].yfrom=6; cc[8].yto=8;
 
     for(int k=0;k<9;k++){
-        if((y >= cc[k].yfrom && y<=cc[k].yto) && (x>=cc[k].xfrom && x<=cc[k].yto)){
+        if((y >= cc[k].yfrom && y<=cc[k].yto) && (x>=cc[k].xfrom && x<=cc[k].xto)){
             for(int i=cc[k].yfrom;i<=cc[k].yto;i++){
-                for(int j=cc[k].xfrom;j<=cc[k].yto;j++){
+                for(int j=cc[k].xfrom;j<=cc[k].xto;j++){
                     possible[sudoku[i][j]] = false;
                 }
             }
@@ -117,25 +98,29 @@ void possible_num (int y, int x, bool possible[]) {
 }
 
 void recursion(int now) {
-    if(now > jump.size()-1){
-        return;
+    if(now >= jump.size()){
+        //출력후 프로그램 종료.
+        output();
+        exit(0);
     }
     int y,x;
     y=jump[now].first; x = jump[now].second;
     bool possible[9+1]; //1~9까지 가능한 수 찾기
+    for(int i=1;i<=9;i++){
+        possible[i] = true;
+    }
     possible_num(y,x, possible);
     for(int i=1;i<=9;i++){
         if(possible[i] == true) {
             sudoku[y][x] = i;
-            output();
-            cout << '\n';
+            //output();
             recursion(now+1);
+            sudoku[y][x] = 0;
         }
     }
-    P a = next_index(y,x);
-    if(a.first ==-1 && a.second==-1){
-        output();
-    }
+    sudoku[y][x] = 0;
+    
+    
     
     return;
 }
