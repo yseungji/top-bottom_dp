@@ -10,3 +10,5 @@ git remote add origin https://github.com/yourID/new-repository.git
 다시 연결하였다.
 
 이후 절차에 맞게 진행하였다.
+
+이 경우에 기존의 commit은 삭제되지 않고 남아있다.
